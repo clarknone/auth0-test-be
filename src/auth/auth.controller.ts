@@ -48,7 +48,6 @@ export class AuthController {
     return this.authService.profile(user);
   }
 
-  
   @UseGuards(JwtAuthGuard)
   @Put('profile')
   updateProfile(
@@ -67,6 +66,12 @@ export class AuthController {
   @Post('refresh')
   refresh(@Body() data: RefreshTokenDto) {
     return this.authService.refreshToken(data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('verify/email')
+  verifyEmail(@GetAuthUser() user: IAuthUser) {
+    return this.authService.verifyEmail(user);
   }
 
   @Post('forgotpassword')

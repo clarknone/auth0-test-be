@@ -18,7 +18,7 @@ import {
   UserDocument,
 } from './schema/auth.schema';
 import * as bcrypt from 'bcrypt';
-import { parseDBError } from 'src/helper/main';
+import { clearNullField, parseDBError } from 'src/helper/main';
 import { ServiceException } from 'src/helper/exceptions/exceptions/service.layer.exception';
 import { JwtService } from '@nestjs/jwt';
 import { bruteForceCheck } from './helpers/services/auth.helper';
@@ -100,11 +100,13 @@ export class AuthService {
       },
     )
       .then(async (user) => {
+        let auth0Data = {
+          given_name: user.fullname,
+          phone_number: user.phone || null,
+        };
+        auth0Data = clearNullField(auth0Data);
         return this.auth0Management
-          .updateUser(
-            { id: user.authId },
-            { given_name: user.fullname, phone_number: user.phone },
-          )
+          .updateUser({ id: user.authId }, auth0Data)
           .then((res) => {
             // console.log('profile editeed', { res });
             return user;
@@ -116,6 +118,14 @@ export class AuthService {
       })
       .catch((e) => {
         // console.log({ name: 'main', e });
+        throw new ServiceException({ error: parseDBError(e) });
+      });
+  }
+
+  async verifyEmail(authUser: IAuthUser) {
+    return this.auth0Management
+      .sendEmailVerification({ user_id: authUser.user })
+      .catch((e) => {
         throw new ServiceException({ error: parseDBError(e) });
       });
   }

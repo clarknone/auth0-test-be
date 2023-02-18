@@ -16,3 +16,13 @@ export class Auth0MangementProvider extends auth0.ManagementClient {
     });
   }
 }
+
+export class AuthAuthenticationProvider extends auth0.AuthenticationClient {
+  constructor() {
+    super({
+      domain: process.env.AUTH_DOMAIN,
+      clientId: process.env.AUTH_CLIENT,
+      clientSecret: process.env.AUTH_CLIENT_SECRET,
+    });
+  }
+}
