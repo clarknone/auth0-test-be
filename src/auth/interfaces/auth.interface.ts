@@ -8,7 +8,8 @@ export interface IAuthUser {
   fullName?: string;
   user: string;
   id: Types.ObjectId;
-  isVerified:boolean,
+  isVerified: boolean;
+  role?: string[];
 }
 
 export interface IProfileUser {

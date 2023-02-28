@@ -21,6 +21,7 @@ import {
 import { JwtAuthGuard } from '../helper/guard/auth.guard';
 import { IAuthUser, IProfileUser } from './interfaces/auth.interface';
 import { IErrorResponse } from './interfaces/response.interface';
+import { JwtAdminGuard } from 'src/helper/guard/admin.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -45,6 +46,12 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   profile(@GetAuthUser() user: IAuthUser): Promise<IProfileUser> {
+    return this.authService.profile(user);
+  }
+  
+  @UseGuards(JwtAuthGuard,JwtAdminGuard)
+  @Get('profile/admin')
+  profileAdmin(@GetAuthUser() user: IAuthUser): Promise<IProfileUser> {
     return this.authService.profile(user);
   }
 
