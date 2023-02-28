@@ -23,7 +23,9 @@ export class Auth0Strategy extends PassportStrategy(Strategy, 'jwt-auth') {
 
   async validate(params: any) {
     if (params?.sub) {
+      console.log({ params });
       params.user = params.sub;
+      params.role = params['user/roles'];
       // params.user = params.sub.split('|')[1];
     }
     // console.log({ params });
